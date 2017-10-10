@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- 加载js -->
+<div th:fragment="loadjs">
+    <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+    <script th:src="@{/vendor/jquery/jquery.form.js}"></script>
+    <script th:src="@{/vendor/bootstrap/js/bootstrap.min.js}"></script>
+
+    <script th:src="@{/vendor/layer/layer.js}"></script>
+    <script th:src="@{/vendor/My97DatePicker/WdatePicker.js}"></script>
+    <script th:src="@{/js/util.js}"></script>
+
+    <script th:src="@{/vendor/echarts/echarts.js}"></script>
+</div>
+</body>
+</html>

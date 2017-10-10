@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<header th:replace="common/loadcss :: commonCss('系统检测统计')"></header>
+<head>
+    <meta charset="UTF-8"/>
+    <style type="text/css">
+        ul {
+            margin-top: 20px;
+            margin-left: 20px;
+        }
+
+        .div_tabs {
+            margin-top: 20px;
+            margin-left: 20px;
+        }
+
+    </style>
+</head>
+<body class="theme-blue">
+<div th:include="common/head :: banner"></div>
+
+<ul class="nav nav-tabs">
+    <li class="active"><a href="#record" data-toggle="tab">系统检测记录</a></li>
+    <li><a href="#stats" data-toggle="tab">月检测次数</a></li>
+</ul>
+
+<div id="myTabContent" class="tab-content">
+
+    <div id="record" class="tab-pane active in div_tabs">
+
+        <div class="row" style="margin-top: 15px;width: 100%">
+            <div class="col-md-6"></div>
+            <div class="col-md-6 form-horizontal">
+                <div class="form-group">
+                    <label class="col-md-5 control-label">选择月份</label>
+                    <div class="col-md-7">
+                        <div class="form-inline">
+                            <input id="start" name="start" type="text" class="form-control" style="width: 100px;"
+                                   readonly="readonly"
+                                   onclick="WdatePicker({dateFmt:'yyyy-MM', isShowToday: false, isShowClear:false,maxDate:'#F{$dp.$D(\'end\') || \'%y-%M-%d\'}'});"/>
+
+                            <span style="margin-left: 5px; margin-right: 5px;">到</span>
+
+                            <input id="end" name="end" type="text" class="form-control" style="width: 100px;"
+                                   readonly="readonly"
+                                   onclick="WdatePicker({dateFmt:'yyyy-MM', isShowToday: false, isShowClear:false,minDate:'#F{$dp.$D(\'start\')}',maxDate:'%y-%M-%d'});"/>
+
+                            <button class="btn btn-primary" style="margin-left: 20px;" onclick="exportExcel();">导出
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <table class="table">
+            <thead>
+            <tr style="font-weight: bold">
+                <td width="8%">序号</td>
+                <td width="10%">系统编号</td>
+                <td width="20%">系统名称</td>
+                <td width="13%">内网IP</td>
+                <td width="12%">测试时间</td>
+                <td width="37%">测试状态</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="record,iterStat : ${records}">
+                <!-- thymeleaf循环中，根据状态变量iterStat获取序号  -->
+                <td th:text="${iterStat.index + 1}"></td>
+                <td th:text="${record.systemId}"></td>
+                <td th:text="${record.systemName}"></td>
+                <td th:text="${record.localIp}"></td>
+                <td th:text="${#calendars.format(record.scanCreateTime,'yyyy-MM-dd HH:mm')}"></td>
+                <td th:text="${record.scanInfo}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="stats" class="tab-pane fade div_tabs">
+        <div class="col-md-8">
+            <div id="main" style="width: 900px;height:400px;"></div>
+        </div>
+        <div class="col-md-4">
+            <table class="table">
+                <thead>
+                <tr style="font-weight: bold">
+                    <td>月份</td>
+                    <td>检测次数</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="scan : ${scans}">
+                    <td th:text="${scan.months}"></td>
+                    <td th:text="${scan.counts}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<div th:include="common/loadjs :: loadjs"></div>
+
+<script type="text/javascript">
+    $(function () {
+        $.get(getRootPath() + '/itscy/stats', {}, function (result) {
+            if (!result['success']) {
+                showError('统计错误，请联系管理员！');
+                return false;
+            }
+
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('main'));
+
+            // 指定图表的配置项和数据
+            var option = {
+                title: {
+                    text: '检测次数折线图'
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {
+                    data: ['检测次数']
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: result['data'][0]
+                },
+                yAxis: {},
+                series: [{
+                    name: '销量',
+                    type: 'line',
+                    data: result['data'][1]
+                }]
+            };
+
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+        }, 'json');
+    });
+
+    function exportExcel() {
+        var start = $("#start").val();
+        var end = $("#end").val();
+
+        if (start == '' || end == '') {
+            showError("月份不能为空！")
+            return false;
+        }
+
+        var url = getRootPath() + '/itscy/record/download';
+        $('<form action="' + url + '" method="get" style="display:none" >' +
+            '<input type="hidden" name="start"  value="' + start + '" />' +
+            '<input type="hidden" name="end"  value="' + end + '" /></form>').appendTo('body').submit();
+    }
+</script>
+
+</body>
+</html>

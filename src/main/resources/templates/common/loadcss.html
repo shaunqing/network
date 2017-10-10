@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- 加载css -->
+<header th:fragment="commonCss(title)">
+    <title th:text="${title}"></title>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+
+    <link rel="stylesheet" th:href="@{/vendor/bootstrap/css/bootstrap.css}" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/vendor/bootstrap/css/bootstrap-theme.css}" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/vendor/font-awesome/css/font-awesome.min.css}" type="text/css"/>
+
+    <link rel="stylesheet" th:href="@{/vendor/stylesheets/google-font.css}" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/vendor/stylesheets/theme.css}" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/vendor/stylesheets/premium.css}" type="text/css"/>
+
+</header>
+</html>

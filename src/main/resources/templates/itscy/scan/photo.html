@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<header th:replace="common/loadcss :: commonCss('预览附件')"></header>
+<head>
+    <meta charset="UTF-8"/>
+</head>
+<body>
+<input type="hidden" id="scanId" th:value="${scanId}"/>
+<div style="text-align: center;">
+    <img src="" style="width: 900px;"/>
+</div>
+
+
+<div th:include="common/loadjs :: loadjs"></div>
+<script type="text/javascript">
+    $(function () {
+        $("img").attr("src", getRootPath() + "/itscy/scan/" + $("#scanId").val() + "/photo");
+    })
+</script>
+
+</body>
+</html>

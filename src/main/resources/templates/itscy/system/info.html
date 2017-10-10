@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<header th:replace="common/loadcss :: commonCss(${webSystem.name})"></header>
+<head>
+    <style type="text/css">
+        .page-header {
+            font-weight: bolder;
+            margin-top: 15px;
+        }
+
+        i {
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body class="theme-blue">
+<div th:include="common/head :: banner"></div>
+
+<div>
+    <div class="col-md-1"></div>
+    <div class="col-md-10" style="margin-top: 20px">
+        <div class="row">
+            <h3 class="page-header">系统信息</h3>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <span th:text="'系统编号：' + ${webSystem.systemId}"></span>
+                </div>
+                <div class="form-group">
+                    <span th:text="'系统名称：' + ${webSystem.name}"></span>
+                </div>
+                <div class="form-group">
+                    <span th:text="'内网IP：' + ${webSystem.localIp}"></span>
+                </div>
+                <div class="form-group">
+                    <span th:text="'外网IP：' + ${webSystem.interIp}"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <span th:text="'所属计划：' + ${webSystem.project}"></span>
+                </div>
+                <div class="form-group">
+                    <span th:text="'框架版本：' + ${webSystem.frameworkVer}"></span>
+                </div>
+                <div class="form-group">
+                    <span th:text="'数据库版本：' + ${webSystem.databaseVer}"></span>
+                </div>
+                <div class="form-group">
+                    <span th:text="'中间件版本：' + ${webSystem.middlewareVer}"></span>
+                </div>
+
+
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <span th:text="'联系人：' + ${webSystem.linker}"></span>
+                </div>
+
+                <div class="form-group">
+                    <span th:text="'网络类型：' + ${webSystem.netType}"></span>
+                </div>
+                <div class="form-group">
+                    <span th:text="'服务类型：' + ${webSystem.scanType}"></span>
+                </div>
+                <div class="form-group">
+                    <span th:text="'创建时间：' + ${#calendars.format(webSystem.createTime,'yyyy-MM-dd')}"></span>
+                </div>
+            </div>
+            <input type="hidden" id="systemId" th:value="${webSystem.systemId}"/>
+        </div>
+
+        <div class="row">
+            <h3 style="font-weight: bolder">安全测试记录</h3>
+            <table class="table">
+                <tr>
+                    <th width="20%">测试状态</th>
+                    <th width="20%">情况</th>
+                    <th width="20%">时间</th>
+                    <th width="40%">操作</th>
+                </tr>
+                <tbody style="text-align: left">
+                <tr th:each="scan : ${webScan}">
+                    <td th:text="${scan.state}"></td>
+                    <td th:text="${scan.info}"></td>
+                    <td th:text="${#calendars.format(scan.createTime,'yyyy-MM-dd HH:mm')}"></td>
+                    <td>
+                        <i class="fa fa-trash" th:onclick="'deleteState(\''+ ${scan.scanId} + '\')'">&nbsp;删除&nbsp;&nbsp;&nbsp;&nbsp;</i>
+
+
+                        <i th:if="${scan.fileCount} == 0" class="fa fa-upload"
+                           th:onclick="'pageUpload(\''+ ${scan.scanId} + '\')'">&nbsp;上传&nbsp;&nbsp;&nbsp;&nbsp;</i>
+
+
+                        <i th:if="${scan.fileCount} != 0" class="fa fa-download"
+                           th:onclick="'download(\''+ ${scan.scanId} + '\')'">&nbsp;附件&nbsp;&nbsp;&nbsp;&nbsp;</i>
+
+                        <i th:if="(${scan.fileCount} != 0) and (${scan.fileExtension} != 'doc')" class="fa fa-eye"
+                           th:onclick="'viewPhoto(\''+ ${scan.scanId} + '\')'">&nbsp;预览</i>
+
+                        <i th:if="(${scan.fileCount} != 0) and (${scan.fileExtension} == 'doc')" class="fa fa-eye"
+                           th:onclick="'viewDoc(\''+ ${scan.scanId} + '\')'">&nbsp;预览</i>
+
+
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="reFlag" value="0"/>
+
+<div th:include="common/loadjs :: loadjs"></div>
+<script type="text/javascript">
+    function deleteState(scanId) {
+        layer.confirm('删除后将不可恢复，确认删除？', {icon: 3, title: '提示', closeBtn: 0}, function (index) {
+            $.ajax({
+                url: getRootPath() + '/itscy/scan/' + scanId,
+                type: 'delete',
+                dataType: 'json',
+                success: function (result) {
+                    var url = '/itscy/page/system/' + $("#systemId").val();
+                    showAjaxResultAndForward(result, url)
+                },
+                error: function (data) {
+                    showError('');
+                }
+            });
+        });
+    }
+
+    function pageUpload(scanId) {
+        layer.open({
+            type: 2,
+            title: '上传附件',
+            skin: 'layui-layer-lan',
+            area: ['500px', '300px'],
+            content: [getRootPath() + '/itscy/page/scan/' + scanId + '/file/upload', 'no'],
+            end: function () { // 还是改成ajax刷新体验最好
+                refresh();
+            }
+        });
+    }
+
+    function download(scanId) {
+        window.location.href = getRootPath() + "/itscy/scan/" + scanId + "/download";
+    }
+
+    function viewPhoto(scanId) {
+        window.open(getRootPath() + "/itscy/page/scan/" + scanId + "/photo");
+    }
+
+    function viewDoc(scanId) {
+        window.open(getRootPath() + "/itscy/page/scan/" + scanId + "/office");
+    }
+
+</script>
+
+
+</body>
+</html>

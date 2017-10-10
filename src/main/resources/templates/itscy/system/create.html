@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<header th:replace="common/loadcss :: commonCss('新建系统')"></header>
+<head>
+    <style type="text/css">
+        .page-header {
+            font-weight: 900;
+            margin-top: 15px;
+        }
+
+        .btn {
+            height: 40px;
+        }
+    </style>
+</head>
+<body class="theme-blue">
+
+<div th:include="common/head :: banner"></div>
+
+<div>
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+        <form id="postForm" class="form-horizontal" method="post">
+            <h3 class="page-header">新建系统信息</h3>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">系统名称</label>
+                        <div class="col-md-8">
+                            <input id="name" name="name" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">内网IP</label>
+                        <div class="col-md-8">
+                            <input id="localIp" name="localIp" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">框架版本</label>
+                        <div class="col-md-8">
+                            <input id="frameworkVer" name="frameworkVer" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">所属计划</label>
+                        <div class="col-md-8">
+                            <input id="project" name="project" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">公网IP</label>
+                        <div class="col-md-8">
+                            <input id="interIp" name="interIp" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">数据库</label>
+                        <div class="col-md-8">
+                            <input id="databaseVer" name="databaseVer" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">申请时间</label>
+                        <div class="col-md-8">
+                            <input id="createTime" name="createTime" type="text" class="form-control"
+                                   readonly="readonly"
+                                   onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm',isShowClear:false});"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">联系人</label>
+                        <div class="col-md-8">
+                            <input id="linker" name="linker" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">中间件</label>
+                        <div class="col-md-8">
+                            <input id="middlewareVer" name="middlewareVer" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <h3 class="page-header" style="font-weight: 900">安全服务信息</h3>
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">网络类型</label>
+                        <div class="col-md-8">
+                            <select name="netType" id="netType" class="form-control">
+                                <option value="业务网">业务网</option>
+                                <option value="工作网">工作网</option>
+                                <option value="单机">单机</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">服务类型</label>
+                        <div class="col-md-8">
+                            <select id="scanType" name="scanType" class="form-control">
+                                <option value="深度渗透测试">深度渗透测试</option>
+                                <option value="操作系统加固">操作系统加固</option>
+                                <option value="数据库加固">数据库加固</option>
+                                <option value="常规渗透测试">常规渗透测试</option>
+                                <option value="主机安全检查">主机安全检查</option>
+                                <option value="代码审计">代码审计</option>
+                                <option value="应急响应">应急响应</option>
+                                <option value="日志分析">日志分析</option>
+                                <option value="其他">其他</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">测试状态</label>
+                        <div class="col-md-8">
+                            <select id="state" name="state" class="form-control">
+                                <option th:each="v : ${state}" th:text="${v.state}"></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <h3 class="page-header" style="font-weight: 900">上传附件</h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">文件类型</label>
+                                <div class="col-md-8">
+                                    <select id="fileType" name="fileType" class="form-control">
+                                        <option th:each="t : ${fileType}" th:text="${t.type}"></option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">上传文件</label>
+                                <div class="col-md-8">
+                                    <input type="file" id="file" name="file" class="file"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="col-md-2 control-label" style="margin-left: 8px;">其他说明</label>
+                            <div class="col-md-8">
+                                <textarea class="form-control" rows="3" id="info" name="info"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row" style="margin-top: 40px;">
+                <div class="col-md-4"></div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-default btn-block" onclick="closeLayer()">取 消</button>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary btn-block">保 存</button>
+                </div>
+                <div class="col-md-4"></div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div th:include="common/loadjs :: loadjs"></div>
+
+<script type="text/javascript">
+    $(function () {
+        var options = {
+            url: getRootPath() + '/itscy/system/',
+            type: 'POST',
+            dataType: 'json',
+            iframe: true,
+            enctype: 'multipart/form-data',
+            success: function (result) {
+                var url = "/itscy/page/system";
+                showAjaxResultAndForward(result, url);
+            },
+            error: function (data) {
+                showError('');
+            }
+        };
+
+        $('#postForm').ajaxForm(options);
+    });
+</script>
+
+</body>
+</html>

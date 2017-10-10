@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<header th:include="common/loadcss :: commonCss('上传附件')"></header>
+<head>
+    <meta charset="UTF-8"/>
+    <style type="text/css">
+        .form-group {
+            margin-top: 30px;
+            width: 100%;
+        }
+
+        .div_inline {
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row" style="margin-left: 20px;">
+        <form id="postForm" class="form-horizontal" method="post">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">文件类型</label>
+                <div class="col-sm-6 div_inline">
+                    <select id="fileType" name="fileType" class="form-control" style="width: 200px;">
+                        <option th:each="t : ${fileType}" th:text="${t.type}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">上传文件</label>
+                <div class="col-sm-6 div_inline">
+                    <input type="file" id="file" name="file" class="file"/>
+                </div>
+            </div>
+            <div class="row" style="margin-top: 60px;margin-left: 80px;">
+                <div class="col-sm-3">
+                    <button type="submit" class="btn btn-primary" style="width: 100px;">上 传</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<input type="hidden" id="scanId" th:value="${scanId}"/>
+
+<div th:include="common/loadjs :: loadjs"></div>
+<script type="text/javascript">
+    $(function () {
+        var options = {
+            url: getRootPath() + '/itscy/scan/' + $("#scanId").val() + '/file',
+            type: 'POST',
+            dataType: 'json',
+            iframe: true,
+            enctype: 'multipart/form-data',
+            success: function (result) {
+                showAjaxResult(result);
+            },
+            error: function (data) {
+                showError('');
+            }
+        };
+
+        $('#postForm').ajaxForm(options);
+
+    });
+</script>
+</body>
+</html>

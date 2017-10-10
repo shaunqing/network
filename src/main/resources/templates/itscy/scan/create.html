@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<header th:include="common/loadcss :: commonCss('添加系统状态')"></header>
+<head>
+    <meta charset="UTF-8"/>
+    <style type="text/css">
+        .form-group {
+            margin-top: 15px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<form id="postForm" class="form-horizontal" method="post">
+    <div class="form-group">
+        <label class="col-sm-3 control-label">测试状态</label>
+        <div class="col-sm-6">
+            <select id="state" name="state" class="form-control">
+                <option th:each="v : ${state}" th:text="${v.state}"></option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">申请时间</label>
+        <div class="col-sm-6">
+            <input id="createTime" name="createTime" type="text" class="form-control"
+                   readonly="readonly"
+                   onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm',isShowClear:false});"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">情况</label>
+        <div class="col-sm-6">
+            <textarea class="form-control" rows="3" id="info" name="info"></textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">文件类型</label>
+        <div class="col-sm-6">
+            <select id="fileType" name="fileType" class="form-control">
+                <option th:each="t : ${fileType}" th:text="${t.type}"></option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">上传文件</label>
+        <div class="col-sm-6">
+            <input type="file" id="file" name="file" class="file"/>
+        </div>
+    </div>
+    <div class="form-group" style="margin-top: 30px;">
+        <div class="col-sm-3 col-sm-offset-4">
+            <button type="button" class="btn btn-default" onclick="closeLayer('0')">取 消</button>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="submit" class="btn btn-primary">保 存</button>
+        </div>
+    </div>
+</form>
+
+<input type="hidden" id="systemId" name="systemId" th:value="${systemId}"/>
+
+<div th:include="common/loadjs :: loadjs"></div>
+<script type="text/javascript">
+    $(function () {
+        var options = {
+            url: getRootPath() + '/itscy/system/' + $("#systemId").val() + '/scan',
+            beforeSubmit: validateInfo,
+            type: 'POST',
+            dataType: 'json',
+            iframe: true,
+            enctype: 'multipart/form-data',
+            success: function (result) {
+                showAjaxResult(result);
+            },
+            error: function (data) {
+                showError('');
+            }
+        };
+
+        $('#postForm').ajaxForm(options);
+
+    });
+
+    function validateInfo(formData, jqForm, options) {
+        var state = $("#state").val();
+        if (state == '待修复' || state == '已废弃') {
+            if ($("#info").val() == '') {
+                layer.alert('情况不能为空！', {
+                    icon: 2
+                });
+                return false;
+            }
+        }
+        return true;
+    }
+
+</script>
+</body>
+</html>

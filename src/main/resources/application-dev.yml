@@ -1,0 +1,9 @@
+root: D:/tmp/network
+
+network:
+  itscyRoot: ${root}/itscy/upload/
+  itscyExport: ${root}/itscy/export/
+  firewallRoot: ${root}/firewall/
+
+logging:
+  file: ${root}/log/network.log

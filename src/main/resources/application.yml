@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/network?characterEncoding=utf8&useSSL=true
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+  profiles:
+    active: prod
+  thymeleaf:
+    content-type: text/html
+    mode: HTML5
+    encoding: UTF-8
+    cache: false
+  devtools:
+    remote:
+      restart:
+        enabled: true
+  http:
+    multipart:
+      max-file-size: 3MB
+server:
+  port: 80
+  context-path: /network
