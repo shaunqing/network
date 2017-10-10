@@ -72,10 +72,10 @@ CREATE TABLE `itscy_web_scan_file` (
 -- ----------------------------
 -- Records of itscy_web_scan_file
 -- ----------------------------
-INSERT INTO `itscy_web_scan_file` VALUES ('13', '29', null, '20171002214017_1_170926 - 政府间国合预申报.jpg', '安全服务工作单', '2017-10-02 21:40:00');
+INSERT INTO `itscy_web_scan_file` VALUES ('13', '29', null, '20171002214017_1_170926 - 11.jpg', '安全服务工作单', '2017-10-02 21:40:00');
 INSERT INTO `itscy_web_scan_file` VALUES ('14', '30', null, '20171002214054_0_222.doc', '安全服务工作单', '2017-10-02 21:40:55');
-INSERT INTO `itscy_web_scan_file` VALUES ('15', '31', null, '20171002215727_8_170926 - 政府间国合预申报.jpg', '安全服务工作单', '2017-10-02 21:57:28');
-INSERT INTO `itscy_web_scan_file` VALUES ('16', '35', null, '20171004100217_5_20171002215727_8_170926 - 政府间国合预申报.jpg', '安全服务工作单', '2017-10-04 10:01:00');
+INSERT INTO `itscy_web_scan_file` VALUES ('15', '31', null, '20171002215727_8_170926 - 11.jpg', '安全服务工作单', '2017-10-02 21:57:28');
+INSERT INTO `itscy_web_scan_file` VALUES ('16', '35', null, '20171004100217_5_20171002215727_8_170926 - 11.jpg', '安全服务工作单', '2017-10-04 10:01:00');
 INSERT INTO `itscy_web_scan_file` VALUES ('17', '36', null, '20171004100243_6_20171002214054_0_222.doc', '漏洞报告', '2017-10-04 10:02:43');
 INSERT INTO `itscy_web_scan_file` VALUES ('18', '38', null, '20171005213804_4_20171004100243_6_20171002214054_0_222.doc', '漏洞报告', '2017-10-05 21:38:05');
 INSERT INTO `itscy_web_scan_file` VALUES ('19', '37', null, '20171005213843_0_20171004100243_6_20171002214054_0_222.doc', '漏洞报告', '2017-10-05 21:38:44');
