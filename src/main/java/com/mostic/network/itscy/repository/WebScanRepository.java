@@ -12,7 +12,13 @@ import java.util.List;
  */
 public interface WebScanRepository extends JpaRepository<WebScan, Integer> {
 
-    List<WebScan> findBySystemId(String systemId);
+    /**
+     * 将数据按照create_time升序
+     *
+     * @param systemId
+     * @return
+     */
+    List<WebScan> findBySystemIdOrderByCreateTimeAsc(String systemId);
 
     /**
      * 用于统计每月的安全检测次数

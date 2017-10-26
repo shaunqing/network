@@ -61,7 +61,7 @@ public class WebScanService extends BaseService {
      * @return
      */
     public List<WebScan> listScanBySystemId(String systemId) {
-        return webScanRepository.findBySystemId(systemId);
+        return webScanRepository.findBySystemIdOrderByCreateTimeAsc(systemId);
     }
 
     /**
