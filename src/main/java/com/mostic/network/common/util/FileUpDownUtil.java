@@ -33,7 +33,7 @@ public class FileUpDownUtil {
     private final static Map<String, List<String>> FILE_CODE_MAP = new HashMap<>();
 
     // 非法16进制字符
-    private final static List<String> FORBIDDEN_HEX = Arrays.asList("ff", "fa", "aa");
+    private final static List<String> FORBIDDEN_HEX = Arrays.asList("ff");
 
     static {
         // 初始化文件类型信息
@@ -221,15 +221,6 @@ public class FileUpDownUtil {
     }
 
     public static void main(String[] args) {
-        String fileName = "170719-创新工作方法测试.jpg";
-
-        String[] s = fileName.split("\\.");
-
-
-        if (!fileName.contains(".") || fileName.split("\\.").length > 1) {
-            System.out.println(1);
-        } else {
-            System.out.println(2);
-        }
+        System.out.println(hasForbiddenHex("20170904_163317_170904service、finance、program复测.jpg"));
     }
 }

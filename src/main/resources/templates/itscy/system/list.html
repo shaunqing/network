@@ -40,14 +40,15 @@
         <table class="table">
             <tr>
                 <th width="12%">系统名称</th>
-                <th width="9%">所属计划</th>
+                <th width="8%">所属计划</th>
                 <th width="10%">内网IP</th>
+                <th width="10%">外网IP</th>
                 <th width="10%">框架版本</th>
                 <th width="8%">联系人</th>
                 <th width="8%">当前状态</th>
                 <th width="10%">情况</th>
-                <th width="8%">创建日期</th>
-                <th width="12%">修改时间</th>
+
+                <th width="11%">修改时间</th>
                 <th width="13%">操作</th>
             </tr>
             <tbody style="text-align: left">
@@ -58,11 +59,12 @@
                 </td>
                 <td th:text="${system.project}"></td>
                 <td th:text="${system.localIp}"></td>
+                <td th:text="${system.interIp}"></td>
                 <td th:text="${system.frameworkVer}"></td>
                 <td th:text="${system.linker}"></td>
                 <td th:text="${system.state}"></td>
                 <td th:text="${system.info}"></td>
-                <td th:text="${#calendars.format(system.systemCreateTime,'yyyy-MM-dd')}"></td>
+
                 <td th:text="${#calendars.format(system.scanCreateTime,'yyyy-MM-dd HH:mm')}"></td>
                 <td>
                     <i class="fa fa-edit" th:onclick="'updateSystemForm(\''+ ${system.systemId} + '\')'">&nbsp;修改</i>
