@@ -36,7 +36,7 @@ public interface WebScanRecordRepository extends JpaRepository<WebScanRecord, In
      *
      * @return
      */
-    @Query(value = report)
+    @Query(value = report + "order by wsr.scanCreateTime desc")
     List<ScanReport> reportScans();
 
     /**
