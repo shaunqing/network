@@ -11,6 +11,7 @@ import com.mostic.network.common.web.AjaxResult;
 import com.mostic.network.itscy.domain.WebScan;
 import com.mostic.network.itscy.domain.WebSystem;
 import com.mostic.network.itscy.domain.WebSystemVo;
+import com.mostic.network.itscy.enums.WebScanStateEnum;
 import com.mostic.network.itscy.exception.ItscyException;
 import com.mostic.network.itscy.repository.WebSystemRepository;
 import com.mostic.network.itscy.repository.WebSystemVoRepository;
@@ -75,6 +76,24 @@ public class WebSystemService extends BaseService {
     }
 
     /**
+     * 显示所有最新状态为测试中、复测中的数据
+     *
+     * @return
+     */
+    public List<WebSystemVo> listWebSystemVoScaning() {
+        return webSystemVoRepository.findGroupBySystemIdByScaningAndLastState(WebScanStateEnum.SCANING.getState(), WebScanStateEnum.RESCANING.getState());
+    }
+
+    /**
+     * 显示所有最新状态为待修复的数据
+     *
+     * @return
+     */
+    public List<WebSystemVo> listWebSystemVoBug() {
+        return webSystemVoRepository.findGroupBySystemIdByStateAndLastState(WebScanStateEnum.BUG.getState());
+    }
+
+    /**
      * 根据Id显示一个系统的信息
      *
      * @param systemId
@@ -102,7 +121,7 @@ public class WebSystemService extends BaseService {
             throws FileUpDownUtilException, ItscyException {
         try {
             // 检查并上传文件
-            String newFileName = FileUpDownUtil.checkAndUploadFile(gloablProperties.getItscyRoot(), file, Arrays.asList("jpg", "png","doc"));
+            String newFileName = FileUpDownUtil.checkAndUploadFile(gloablProperties.getItscyRoot(), file, Arrays.asList("jpg", "png", "doc"));
 
             // 判断时间是否为空
             if (null == webSystem.getCreateTime()) {

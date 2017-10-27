@@ -5,17 +5,9 @@
 <head>
     <style type="text/css">
         .div_table {
-            margin-left: 15px;
-        }
-
-        .div_btn {
             margin-top: 20px;
-        }
-
-        .table {
-            margin-top: 20px;
-            margin-bottom: 20px;
-            text-align: left;
+            margin-left: 10px;
+            margin-right: 10px;
         }
 
         i {
@@ -29,54 +21,137 @@
 
 <div class="div_table">
 
-    <a class="btn btn-primary div_btn" th:href="@{/itscy/page/system/create}">
-        <i class="fa fa-plus"></i>&nbsp;&nbsp;新建系统</a>
-    &nbsp;&nbsp;
+    <ul class="nav nav-tabs" style="margin-left: 10px;">
+        <li class="active"><a href="#all" data-toggle="tab">全部</a></li>
+        <li><a href="#test" data-toggle="tab">测试中<i class="label label-info" th:text="${scanCount}"></i></a></li>
+        <li><a href="#fix" data-toggle="tab">待修复<i class="label label-danger" th:text="${bugCount}"></i></a></li>
+    </ul>
 
-    <a class="btn btn-primary div_btn" th:href="@{/itscy/page/report}" target="_blank">
-        <i class="fa fa-bar-chart"></i>&nbsp;&nbsp;系统检测统计</a>
+    <div id="myTabContent" class="tab-content">
 
-    <div class="table-responsive">
-        <table class="table">
-            <tr>
-                <th width="12%">系统名称</th>
-                <th width="8%">所属计划</th>
-                <th width="10%">内网IP</th>
-                <th width="10%">外网IP</th>
-                <th width="10%">框架版本</th>
-                <th width="8%">联系人</th>
-                <th width="8%">当前状态</th>
-                <th width="10%">情况</th>
+        <div id="all" class="tab-pane active in div_tabs">
+            <div class="table-responsive">
+                <table class="table text-nowrap">
+                    <tr>
+                        <th width="12%">系统名称</th>
+                        <th width="10%">所属计划</th>
+                        <th width="10%">内网IP</th>
+                        <th width="10%">外网IP</th>
+                        <th width="8%">联系人</th>
+                        <th width="8%">当前状态</th>
+                        <th width="15%">情况</th>
+                        <th width="11%">修改时间</th>
+                        <th width="10%">操作</th>
+                    </tr>
+                    <tbody style="text-align: left">
+                    <tr th:each="system : ${systemVo}">
+                        <td>
+                            <a th:href="@{'/itscy/page/system/' + ${system.systemId}}" th:text="${system.name}"
+                               target="_blank"></a>
+                        </td>
+                        <td th:text="${system.project}"></td>
+                        <td th:text="${system.localIp}"></td>
+                        <td th:text="${system.interIp}"></td>
+                        <td th:text="${system.linker}"></td>
+                        <td th:text="${system.state}"></td>
+                        <td th:text="${system.info}"></td>
 
-                <th width="11%">修改时间</th>
-                <th width="13%">操作</th>
-            </tr>
-            <tbody style="text-align: left">
-            <tr th:each="system : ${systemVo}">
-                <td>
-                    <a th:href="@{'/itscy/page/system/' + ${system.systemId}}" th:text="${system.name}"
-                       target="_blank"></a>
-                </td>
-                <td th:text="${system.project}"></td>
-                <td th:text="${system.localIp}"></td>
-                <td th:text="${system.interIp}"></td>
-                <td th:text="${system.frameworkVer}"></td>
-                <td th:text="${system.linker}"></td>
-                <td th:text="${system.state}"></td>
-                <td th:text="${system.info}"></td>
+                        <td th:text="${#calendars.format(system.scanCreateTime,'yyyy-MM-dd HH:mm')}"></td>
+                        <td>
+                            <i class="fa fa-edit" th:onclick="'updateSystemForm(\''+ ${system.systemId} + '\')'">&nbsp;修改</i>
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            <i class="fa fa-plus-circle"
+                               th:onclick="'createScanForm(\''+${system.systemId}+'\')'">&nbsp;添加状态</i>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-                <td th:text="${#calendars.format(system.scanCreateTime,'yyyy-MM-dd HH:mm')}"></td>
-                <td>
-                    <i class="fa fa-edit" th:onclick="'updateSystemForm(\''+ ${system.systemId} + '\')'">&nbsp;修改</i>
-                    &nbsp;&nbsp;&nbsp;&nbsp;
-                    <i class="fa fa-plus-circle"
-                       th:onclick="'createScanForm(\''+${system.systemId}+'\')'">&nbsp;添加状态</i>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+        <div id="test" class="tab-pane fade in div_tabs">
+            <div class="table-responsive">
+                <table class="table text-nowrap">
+                    <tr>
+                        <th width="12%">系统名称</th>
+                        <th width="10%">所属计划</th>
+                        <th width="10%">内网IP</th>
+                        <th width="10%">外网IP</th>
+                        <th width="8%">联系人</th>
+                        <th width="8%">当前状态</th>
+                        <th width="15%">情况</th>
+                        <th width="11%">修改时间</th>
+                        <th width="10%">操作</th>
+                    </tr>
+                    <tbody style="text-align: left">
+                    <tr th:each="system : ${systemVoScaning}">
+                        <td>
+                            <a th:href="@{'/itscy/page/system/' + ${system.systemId}}" th:text="${system.name}"
+                               target="_blank"></a>
+                        </td>
+                        <td th:text="${system.project}"></td>
+                        <td th:text="${system.localIp}"></td>
+                        <td th:text="${system.interIp}"></td>
+                        <td th:text="${system.linker}"></td>
+                        <td th:text="${system.state}"></td>
+                        <td th:text="${system.info}"></td>
+
+                        <td th:text="${#calendars.format(system.scanCreateTime,'yyyy-MM-dd HH:mm')}"></td>
+                        <td>
+                            <i class="fa fa-edit" th:onclick="'updateSystemForm(\''+ ${system.systemId} + '\')'">&nbsp;修改</i>
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            <i class="fa fa-plus-circle"
+                               th:onclick="'createScanForm(\''+${system.systemId}+'\')'">&nbsp;添加状态</i>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="fix" class="tab-pane fade in div_tabs">
+            <div class="table-responsive">
+                <table class="table text-nowrap">
+                    <tr>
+                        <th width="12%">系统名称</th>
+                        <th width="10%">所属计划</th>
+                        <th width="10%">内网IP</th>
+                        <th width="10%">外网IP</th>
+                        <th width="8%">联系人</th>
+                        <th width="8%">当前状态</th>
+                        <th width="15%">情况</th>
+                        <th width="11%">修改时间</th>
+                        <th width="10%">操作</th>
+                    </tr>
+                    <tbody style="text-align: left">
+                    <tr th:each="system : ${systemVoBug}">
+                        <td>
+                            <a th:href="@{'/itscy/page/system/' + ${system.systemId}}" th:text="${system.name}"
+                               target="_blank"></a>
+                        </td>
+                        <td th:text="${system.project}"></td>
+                        <td th:text="${system.localIp}"></td>
+                        <td th:text="${system.interIp}"></td>
+                        <td th:text="${system.linker}"></td>
+                        <td th:text="${system.state}"></td>
+                        <td th:text="${system.info}"></td>
+
+                        <td th:text="${#calendars.format(system.scanCreateTime,'yyyy-MM-dd HH:mm')}"></td>
+                        <td>
+                            <i class="fa fa-edit" th:onclick="'updateSystemForm(\''+ ${system.systemId} + '\')'">&nbsp;修改</i>
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            <i class="fa fa-plus-circle"
+                               th:onclick="'createScanForm(\''+${system.systemId}+'\')'">&nbsp;添加状态</i>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </div>
 </div>
+
 
 <input type="hidden" id="reFlag" value="0"/>
 

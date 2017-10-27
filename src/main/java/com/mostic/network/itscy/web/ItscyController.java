@@ -4,6 +4,7 @@ import com.mostic.network.common.web.AjaxResult;
 import com.mostic.network.common.web.BaseController;
 import com.mostic.network.itscy.domain.WebScan;
 import com.mostic.network.itscy.domain.WebSystem;
+import com.mostic.network.itscy.domain.WebSystemVo;
 import com.mostic.network.itscy.service.ReportService;
 import com.mostic.network.itscy.service.WebScanService;
 import com.mostic.network.itscy.service.WebSystemService;
@@ -55,6 +56,18 @@ public class ItscyController extends BaseController {
     @GetMapping("/page/system")
     public String listWebSystemVo(Model model) {
         model.addAttribute("systemVo", webSystemService.listWebSystemVo());
+        // 测试中
+        List<WebSystemVo> list = webSystemService.listWebSystemVoScaning();
+        int count = list.size();
+        model.addAttribute("systemVoScaning", list);
+        model.addAttribute("scanCount", count);
+
+        // 待修复
+        list = webSystemService.listWebSystemVoBug();
+        count = list.size();
+        model.addAttribute("systemVoBug", list);
+        model.addAttribute("bugCount", count);
+
         return itscyPageRoot + "/system/list";
     }
 

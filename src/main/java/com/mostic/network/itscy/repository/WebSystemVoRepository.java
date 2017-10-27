@@ -35,4 +35,21 @@ public interface WebSystemVoRepository extends JpaRepository<WebSystemVo, Intege
     // 不分页（使用）
     @Query(value = lastStateGroupBySystemId + "ORDER BY scan_create_time DESC", nativeQuery = true)
     List<WebSystemVo> findGroupBySystemIdAndLastState();
+
+    /**
+     * 基于findGroupBySystemIdAndLastState()，选出状态为state的数据
+     *
+     * @return
+     */
+    @Query(value = lastStateGroupBySystemId + " WHERE a.state = ?1 ORDER BY scan_create_time DESC", nativeQuery = true)
+    List<WebSystemVo> findGroupBySystemIdByStateAndLastState(String state);
+
+    /**
+     * 查找测试中的数据，含测试中、复测中
+     * @param scan
+     * @param rescan
+     * @return
+     */
+    @Query(value = lastStateGroupBySystemId + " WHERE a.state = ?1 OR a.state = ?2 ORDER BY scan_create_time DESC", nativeQuery = true)
+    List<WebSystemVo> findGroupBySystemIdByScaningAndLastState(String scan, String rescan);
 }
