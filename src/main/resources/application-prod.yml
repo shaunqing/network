@@ -7,3 +7,7 @@ network:
 
 logging:
   file: ${root}/log/network.log
+
+server:
+  port: 80
+  context-path: /network

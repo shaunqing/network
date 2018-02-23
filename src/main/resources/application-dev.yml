@@ -7,3 +7,12 @@ network:
 
 logging:
   file: ${root}/log/network.log
+
+server:
+  port: 443
+  context-path: /network
+  ssl:
+    key-store: classpath:keystore.p12
+    key-store-password: 123123
+    key-alias: tomcat
+    trust-store-type: PCKS12
