@@ -117,14 +117,18 @@ public class FileUpDownUtil {
         }
 
         // 检测文件名是否含有非法16进制字符
+        /*
         if (hasForbiddenHex(fileName)) {
             throw new FileUpDownUtilException(FILE_NAME_ERROR);
         }
+        */
 
         // 没有.或者有多个.都算不合法
+        /*
         if (!fileName.contains(".") || fileName.split("\\.").length > 2) {
             throw new FileUpDownUtilException(FILE_NAME_ERROR);
         }
+        */
 
         try {
             byte[] b = new byte[10];
