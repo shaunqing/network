@@ -26,11 +26,14 @@ public class WebScanFile {
 
     private Integer userId;
 
-    @Length(max = 100, message = "附加名称过长！")
+    @Length(max = 100, message = "名称过长！")
     private String name;
 
     @Length(max = 10)
     private String type;
+
+    @Length(max = 100, message = "名称过长！")
+    private String previewName;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
@@ -91,5 +94,13 @@ public class WebScanFile {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public String getPreviewName() {
+        return previewName;
+    }
+
+    public void setPreviewName(String previewName) {
+        this.previewName = previewName;
     }
 }

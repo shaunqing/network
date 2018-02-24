@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<header th:replace="common/loadcss :: commonCss('预览附件')"></header>
+<head>
+    <meta charset="UTF-8">
+
+</head>
+<body>
+
+
+
+
+<iframe class="iframe"></iframe>
+
+<div th:include="common/loadjs :: loadjs"></div>
+<script type="text/javascript">
+    $(function () {
+        $("iframe").attr("src", getRootPath() + "/vendor/pdf/web/viewer.html?file=/itscy/displayPDF");
+    })
+</script>
+</body>
+</html>

@@ -9,20 +9,38 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import com.jacob.activeX.ActiveXComponent;
+import com.jacob.com.ComThread;
+import com.jacob.com.Dispatch;
+import com.jacob.com.Variant;
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.converter.PicturesManager;
 import org.apache.poi.hwpf.converter.WordToHtmlConverter;
 import org.apache.poi.hwpf.usermodel.Picture;
 import org.apache.poi.hwpf.usermodel.PictureType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 /**
- * Office转Html工具类
+ * Office工具
  * Created by LIQing
  * 2017/10/2 20:03
  */
+
 public class OfficeUtil {
 
+    private final static Logger log = LoggerFactory.getLogger(OfficeUtil.class);
+
+    private static final int wdFormatPDF = 17;// PDF 格式
+
+    /**
+     * word转html
+     * @param path
+     * @param fileName
+     * @return
+     * @throws Throwable
+     */
     public static String wordToHtml(String path, String fileName) throws Throwable {
         InputStream input = new FileInputStream(path + fileName);
         HWPFDocument wordDocument = new HWPFDocument(input);
@@ -65,8 +83,60 @@ public class OfficeUtil {
 //        FileUtils.writeStringToFile(new File(path, "人员选择系分.html"), content, "utf-8");
     }
 
-    public static String generateHtmlByDoc() {
+    /**
+     * word转pdf，返回pdf文件相对路径（pdf/xxx.pdf）
+     * @param rootPath 上传文件保存路径
+     * @param fileRelativePath word文件相对路径（word/xxx.doc）
+     * @param pdfPath pdf保存相对路径
+     * @return
+     */
+    public static String generatePdfByWord(String rootPath, String fileRelativePath, String pdfPath) {
+        log.info("启动Word...");
+        long start = System.currentTimeMillis();
+        ActiveXComponent app = null;
+        Dispatch doc = null;
+        String pdfRelativePath = "";
+        try {
+            app = new ActiveXComponent("Word.Application");
+            app.setProperty("Visible", new Variant(false));
+            Dispatch docs = app.getProperty("Documents").toDispatch();
 
-        return null;
+            // 打开原word文档
+            doc = Dispatch.call(docs, "Open", rootPath + fileRelativePath).toDispatch();
+            // 生成pdf文件的相对路径（pdf/xxx.pdf）
+            pdfRelativePath = initPdf(pdfPath, fileRelativePath);
+            // 转换
+            Dispatch.call(doc, "SaveAs", rootPath + pdfRelativePath, wdFormatPDF);
+
+            long end = System.currentTimeMillis();
+            log.info("转换完成..用时：" + (end - start) + "ms.");
+        } catch (Exception e) {
+            log.error("========Error:文档转换失败：" + e.getMessage());
+        } finally {
+            Dispatch.call(doc, "Close", false);
+            log.info("关闭文档");
+            if (app != null)
+                app.invoke("Quit", new Variant[]{});
+        }
+        ComThread.Release(); //如果没有这句话,winword.exe进程将不会关闭
+        return pdfRelativePath;
     }
+
+    /**
+     * 初始化Pdf文件
+     * @param pdfPath pdf保存相对路径
+     * @param fileRelativePath word文件（word/xxx.doc）
+     * @return
+     */
+    private static String initPdf(String pdfPath, String fileRelativePath) {
+        // 获得doc的文件名，不带后缀
+        String pdfName = fileRelativePath.substring(fileRelativePath.lastIndexOf('/') + 1, fileRelativePath.lastIndexOf('.')) + ".pdf";
+        String toFileName = pdfPath + pdfName;
+        File tofile = new File(toFileName);
+        if (tofile.exists()) {
+            tofile.delete();
+        }
+        return toFileName;
+    }
+
 }

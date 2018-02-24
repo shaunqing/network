@@ -27,6 +27,12 @@ public class FileUpDownUtil {
     private final static String FILE_NAME_ERROR = "文件名不合法";
     private final static String FILE_EXTENSION_ERROR = "文件类型不合法";
 
+    // 上传目录下的子文件夹
+    public final static String SUBFOLDER_PHOTO = "photo/";
+    public final static String SUBFOLDER_WORD = "word/";
+    public final static String SUBFOLDER_PDF = "pdf/";
+    public final static String SUBFOLDER_OTHER = "other/";
+
     private final static Logger logger = LoggerFactory.getLogger(FileUpDownUtil.class);
 
     // 保存正确文件头编码
@@ -56,7 +62,7 @@ public class FileUpDownUtil {
      * @param root           保存路径
      * @param multipartFile  上传文件
      * @param allowExtension 允许的后缀
-     * @return 成功：返回文件名（若file是空，返回EMPTY）；失败：抛出FileUpDownUtilException异常
+     * @return 成功：返回子目录+文件名（若file是空，返回EMPTY）；失败：抛出FileUpDownUtilException异常
      */
     public static String checkAndUploadFile(String root, MultipartFile multipartFile, List<String> allowExtension) {
         try {
@@ -72,13 +78,13 @@ public class FileUpDownUtil {
                 throw new FileUpDownUtilException(FILE_EXTENSION_ERROR);
             }
 
-            makeRootFolder(root); // 创建文件夹
+            String subFolder = makeRootFolder(root,fileExtension); // 根据后缀名创建不同的文件夹
 
             String newFileName = makeRandomName() + multipartFile.getOriginalFilename(); // 生成文件名，保留原始文件名（业务需要）
-            String newFilePath = root + newFileName; // 拼接路径
+            String newFilePath = root + subFolder + newFileName; // 拼接路径
             multipartFile.transferTo(new File(newFilePath)); // 上传
 
-            return newFileName;
+            return subFolder + newFileName;
         } catch (FileUpDownUtilException e) {
             throw e;
         } catch (IOException e) {
@@ -90,13 +96,38 @@ public class FileUpDownUtil {
         }
     }
 
-    /* 生成保存文件夹 */
-    private static void makeRootFolder(String root) {
-        File rootFolder = new File(root);
+    /**
+     * 根据文件后缀，创建保存上传文件的目录，返回子目录
+     * @param root 主目录
+     * @param fileExtension 文件后缀
+     * @return 子目录
+     */
+    private static String makeRootFolder(String root, String fileExtension) {
+        String subFolder = getSubFolder(fileExtension);
+        File rootFolder = new File(root + subFolder);
         if (!rootFolder.exists() || !rootFolder.isDirectory()) {
             rootFolder.mkdirs();
         }
+        return subFolder;
     }
+
+    /**
+     * 获取需要的子目录
+     * @param fileExtension
+     * @return
+     */
+    private static String getSubFolder(String fileExtension) {
+        if (fileExtension.equals("jpg") || fileExtension.equals("png")) {
+            return SUBFOLDER_PHOTO;
+        } else if (fileExtension.contains("doc")) {
+            return SUBFOLDER_WORD;
+        } else if (fileExtension.equals("pdf")) {
+            return SUBFOLDER_PDF;
+        } else {
+            return SUBFOLDER_OTHER;
+        }
+    }
+
 
     /*生成随机文件名*/
     private static String makeRandomName() {

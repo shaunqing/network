@@ -9,6 +9,7 @@ import com.mostic.network.itscy.service.ReportService;
 import com.mostic.network.itscy.service.WebScanService;
 import com.mostic.network.itscy.service.WebSystemService;
 import com.mostic.network.itscy.util.OfficeUtil;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -281,10 +282,10 @@ public class ItscyController extends BaseController {
     @GetMapping("/page/scan/{scanId}/office")
     public void viewOffice(@PathVariable("scanId") Integer scanId, HttpServletResponse response)
             throws Throwable {
-        response.setContentType("text/html");
-        response.setCharacterEncoding("utf-8");
-        PrintWriter out = response.getWriter();
-        out.println(webScanService.viewWordByHtml(scanId));
+//        response.setContentType("text/html");
+//        response.setCharacterEncoding("utf-8");
+//        PrintWriter out = response.getWriter();
+//        out.println(webScanService.viewWordByHtml(scanId));
     }
 
     /**
@@ -333,6 +334,21 @@ public class ItscyController extends BaseController {
     public AjaxResult statsForEcharts() {
         List<String[]> scans = reportService.statsScanTimesForEcharts();
         return new AjaxResult(true, scans);
+    }
+
+
+    @GetMapping("/display")
+    public void displayPDF(HttpServletResponse response) {
+        try {
+            File file = new File("D:\\tmp\\test3.pdf");
+            FileInputStream fileInputStream = new FileInputStream(file);
+            response.setHeader("Content-Disposition", "attachment;fileName=test.pdf");
+            response.setContentType("multipart/form-data");
+            OutputStream outputStream = response.getOutputStream();
+            IOUtils.write(IOUtils.toByteArray(fileInputStream), outputStream);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

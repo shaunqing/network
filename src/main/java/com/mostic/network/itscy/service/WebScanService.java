@@ -74,8 +74,8 @@ public class WebScanService extends BaseService {
     public AjaxResult saveScan(WebScan webScan, MultipartFile file)
             throws FileUpDownUtilException, ItscyException {
         try {
-            // 检查并上传文件
-            String newFileName = FileUpDownUtil.checkAndUploadFile(gloablProperties.getItscyRoot(), file, Arrays.asList("jpg", "png", "doc", "docx", "wps", "pdf"));
+            // 检查并上传文件，返回值格式：子目录 + 文件名
+            String fileRelativePath = FileUpDownUtil.checkAndUploadFile(gloablProperties.getItscyRoot(), file, Arrays.asList("jpg", "png", "doc", "docx", "wps", "pdf"));
 
             // 判断时间是否为空
             if (null == webScan.getCreateTime()) {
@@ -83,10 +83,13 @@ public class WebScanService extends BaseService {
             }
 
             // 是否上传文件，未上传文件设为0，否则设为1
-            int fileCount = newFileName.equals(FileUpDownUtil.EMPTY) ? 0 : 1;
+            int fileCount = fileRelativePath.equals(FileUpDownUtil.EMPTY) ? 0 : 1;
             webScan.setFileCount(fileCount);
 
-            saveScanAndFileAndRecord(webScan, webScan.getFileType(), newFileName);
+            saveScanAndFileAndRecord(webScan, webScan.getFileType(), fileRelativePath);
+
+            // TODO word转pdf
+            convertPdfByWord(fileRelativePath, webScan.getScanId());
 
             return new AjaxResult(true, MessageEnums.SAVE_SUCCESS);
         } catch (FileUpDownUtilException e) {
@@ -103,14 +106,14 @@ public class WebScanService extends BaseService {
      *
      * @param webScan
      * @param fileType
-     * @param newFileName
+     * @param fileRelativePath
      */
-    public void saveScanAndFileAndRecord(WebScan webScan, String fileType, String newFileName) {
-        webScan.setFileExtension(webScan.getFileCount() == 0 ? "" : FileUpDownUtil.getFileExtension(newFileName));
+    public void saveScanAndFileAndRecord(WebScan webScan, String fileType, String fileRelativePath) {
+        webScan.setFileExtension(webScan.getFileCount() == 0 ? "" : FileUpDownUtil.getFileExtension(fileRelativePath));
         webScan = webScanRepository.save(webScan);
         // 若上传了文件，则保存记录
         if (webScan.getFileCount() > 0) {
-            WebScanFile webScanFile = new WebScanFile(webScan.getScanId(), newFileName, fileType, webScan.getCreateTime());
+            WebScanFile webScanFile = new WebScanFile(webScan.getScanId(), fileRelativePath, fileType, webScan.getCreateTime());
             webScanFileRepository.save(webScanFile);
         }
 
@@ -178,9 +181,9 @@ public class WebScanService extends BaseService {
                 return new AjaxResult(false, MessageEnums.NOT_FOUND);
             }
 
-            // 检查并上传文件
-            String newFileName = FileUpDownUtil.checkAndUploadFile(gloablProperties.getItscyRoot(), file, Arrays.asList("jpg", "png", "doc", "docx", "wps", "pdf"));
-            if (newFileName.equals(FileUpDownUtil.EMPTY)) {
+            // 检查并上传文件，返回值格式：子目录 + 文件名
+            String fileRelativePath = FileUpDownUtil.checkAndUploadFile(gloablProperties.getItscyRoot(), file, Arrays.asList("jpg", "png", "doc", "docx", "wps", "pdf"));
+            if (fileRelativePath.equals(FileUpDownUtil.EMPTY)) {
                 return new AjaxResult(false, MessageEnums.UPLOAD_ERROR);
             }
 
@@ -193,15 +196,18 @@ public class WebScanService extends BaseService {
             }
 
             // 设置相关信息后，保存
-            webScanFile.setName(newFileName);
+            webScanFile.setName(fileRelativePath);
             webScanFile.setType(fileType);
             webScanFile.setCreateTime(new Date());
             webScanFileRepository.save(webScanFile);
 
             // 更新状态的文件数
             webScan.setFileCount(1);
-            webScan.setFileExtension(FileUpDownUtil.getFileExtension(newFileName));
+            webScan.setFileExtension(FileUpDownUtil.getFileExtension(fileRelativePath));
             webScanRepository.save(webScan);
+
+            // TODO word转pdf
+            convertPdfByWord(fileRelativePath, scanId);
 
             return new AjaxResult(true, MessageEnums.UPLOAD_SUCCESS);
         } catch (FileUpDownUtilException e) {
@@ -210,6 +216,28 @@ public class WebScanService extends BaseService {
             throw new ItscyException(MessageEnums.SYSTEM_ERROR, e);
         }
     }
+
+    /**
+     * 将word文件转为pdf，并保存到web_scan_file表中的previewName字段
+     * @param fileRelativePath
+     * @param scanId
+     */
+    private void convertPdfByWord(String fileRelativePath, Integer scanId) {
+        // 1. 检测是否为doc、docx
+        if (fileRelativePath.endsWith("doc") || fileRelativePath.endsWith("docx")) {
+            // 2. 执行转换程序
+            String pdfRelativePath = OfficeUtil.generatePdfByWord(
+                    gloablProperties.getItscyRoot(), fileRelativePath, FileUpDownUtil.SUBFOLDER_PDF);
+
+            // 3 执行成功，将pdf相对路径写入previewName字段
+            if (!pdfRelativePath.equals("")) {
+                WebScanFile webScanFile = webScanFileRepository.findByScanId(scanId);
+                webScanFile.setPreviewName(pdfRelativePath);
+                webScanFileRepository.save(webScanFile);
+            }
+        }
+    }
+
 
     /**
      * 图片预览
