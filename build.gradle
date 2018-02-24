@@ -3,6 +3,11 @@ buildscript {
 		springBootVersion = '1.5.7.RELEASE'
 	}
 	repositories {
+		maven {
+			name "aliyunmaven"
+			url "http://maven.aliyun.com/nexus/content/groups/public/"
+		}
+
 		mavenCentral()
 	}
 	dependencies {
@@ -19,6 +24,11 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
 
 repositories {
+	maven {
+		name "aliyunmaven"
+		url "http://maven.aliyun.com/nexus/content/groups/public/"
+	}
+
 	mavenCentral()
 }
 
@@ -29,6 +39,8 @@ dependencies {
 	compile group: 'org.apache.poi', name: 'poi-scratchpad', version: '3.15'
 	compile group: 'org.apache.poi', name: 'poi-ooxml', version: '3.15'
 	compile group: 'org.apache.poi', name: 'poi', version: '3.15'
+
+	compile group: 'com.hynnet', name: 'jacob', version: '1.18'
 
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')
 	compile('org.springframework.boot:spring-boot-starter-validation')
