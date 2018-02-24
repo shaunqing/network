@@ -157,34 +157,5 @@
 
 <div th:include="common/loadjs :: loadjs"></div>
 
-<script type="text/javascript">
-    function updateSystemForm(systemId) {
-        layer.open({
-            type: 2,
-            title: '修改系统信息',
-            skin: 'layui-layer-lan',
-            area: ['770px', '450px'],
-            // 这里采用相对路径的方式访问页面，其前缀是network/itscy/page/。no代表：不出现滚动条
-            content: ['system/' + systemId + '/update', 'no'],
-            end: function () { // 还是改成ajax刷新体验最好
-                refresh();
-            }
-        });
-    }
-
-    function createScanForm(systemId) {
-        layer.open({
-            type: 2,
-            title: '添加状态',
-            skin: 'layui-layer-lan',
-            area: ['770px', '450px'],
-            content: [systemId + '/scan/create', 'no'],
-            end: function () {
-                refresh();
-            }
-        });
-    }
-
-</script>
 </body>
 </html>

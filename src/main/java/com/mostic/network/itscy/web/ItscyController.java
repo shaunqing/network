@@ -273,19 +273,21 @@ public class ItscyController extends BaseController {
     }
 
     /**
-     * 预览doc格式文件
-     *
-     * @param scanId
+     * 预览word文件（实际是pdf文件）
      * @param response
-     * @throws Throwable
      */
-    @GetMapping("/page/scan/{scanId}/office")
-    public void viewOffice(@PathVariable("scanId") Integer scanId, HttpServletResponse response)
-            throws Throwable {
-//        response.setContentType("text/html");
-//        response.setCharacterEncoding("utf-8");
-//        PrintWriter out = response.getWriter();
-//        out.println(webScanService.viewWordByHtml(scanId));
+    @GetMapping("/page/scan/{scanId}/preview")
+    public void previewPdf(@PathVariable("scanId") Integer scanId, HttpServletResponse response) {
+        try {
+            File file = webScanService.getPreviewPdf(scanId);
+            FileInputStream fileInputStream = new FileInputStream(file);
+            response.setHeader("Content-Disposition", "attachment;fileName=test.pdf");
+            response.setContentType("multipart/form-data");
+            OutputStream outputStream = response.getOutputStream();
+            IOUtils.write(IOUtils.toByteArray(fileInputStream), outputStream);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -337,18 +339,6 @@ public class ItscyController extends BaseController {
     }
 
 
-    @GetMapping("/display")
-    public void displayPDF(HttpServletResponse response) {
-        try {
-            File file = new File("D:\\tmp\\test3.pdf");
-            FileInputStream fileInputStream = new FileInputStream(file);
-            response.setHeader("Content-Disposition", "attachment;fileName=test.pdf");
-            response.setContentType("multipart/form-data");
-            OutputStream outputStream = response.getOutputStream();
-            IOUtils.write(IOUtils.toByteArray(fileInputStream), outputStream);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+
 
 }

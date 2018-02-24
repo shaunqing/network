@@ -69,3 +69,32 @@ function refresh() {
         window.location.href = window.location.href;
     }
 }
+
+// 添加状态
+function createScanForm(systemId) {
+    layer.open({
+        type: 2,
+        title: '添加状态',
+        skin: 'layui-layer-lan',
+        area: ['770px', '450px'],
+        content: [getRootPath() + '/itscy/page/' +systemId + '/scan/create', 'no'],
+        end: function () {
+            refresh();
+        }
+    });
+}
+
+// 修改系统信息
+function updateSystemForm(systemId) {
+    layer.open({
+        type: 2,
+        title: '修改系统信息',
+        skin: 'layui-layer-lan',
+        area: ['770px', '450px'],
+        // 这里采用相对路径的方式访问页面，其前缀是network/itscy/page/。no代表：不出现滚动条
+        content: [getRootPath() + '/itscy/page/system/' + systemId + '/update', 'no'],
+        end: function () { // 还是改成ajax刷新体验最好
+            refresh();
+        }
+    });
+}

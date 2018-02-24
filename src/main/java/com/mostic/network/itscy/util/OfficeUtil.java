@@ -113,7 +113,10 @@ public class OfficeUtil {
         } catch (Exception e) {
             log.error("========Error:文档转换失败：" + e.getMessage());
         } finally {
-            Dispatch.call(doc, "Close", false);
+            try {
+                Dispatch.call(doc, "Close", false);
+            } catch (Exception e) {
+            }
             log.info("关闭文档");
             if (app != null)
                 app.invoke("Quit", new Variant[]{});

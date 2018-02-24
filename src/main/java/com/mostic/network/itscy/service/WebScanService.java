@@ -294,19 +294,11 @@ public class WebScanService extends BaseService {
      * @param scanId
      * @return
      */
-    public String viewWordByHtml(Integer scanId) {
+    public File getPreviewPdf(Integer scanId) {
         WebScanFile webScanFile = webScanFileRepository.findByScanId(scanId);
-        String fileName = webScanFile.getName();
-        String root = gloablProperties.getItscyRoot();
-        try {
-            if (fileName.endsWith(".doc")) {
-                return OfficeUtil.wordToHtml(root, fileName);
-            } else {
-                return "";
-            }
-        } catch (Throwable throwable) {
-            logger.error("word转html错误", throwable);
-            return "";
+        if (webScanFile != null) {
+            return new File(gloablProperties.getItscyRoot() + webScanFile.getPreviewName());
         }
+        return null;
     }
 }
