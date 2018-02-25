@@ -33,7 +33,7 @@ public class ConvertTaskService {
     }
 
     /**
-     * 将word转换为pdf，并保存pdf路径
+     * 将word文件转为pdf，并保存到web_scan_file表中的previewName字段
      * @param scanId
      */
     @Async

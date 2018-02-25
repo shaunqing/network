@@ -128,7 +128,7 @@ public class WebScanService extends BaseService {
             webScanRecordRepository.save(webScanRecord);
         }
 
-        // TODO word转pdf
+        // 执行word转pdf
         convertTaskService.convertPdfByWord(webScan.getScanId());
     }
 
@@ -209,9 +209,8 @@ public class WebScanService extends BaseService {
             webScan.setFileExtension(FileUpDownUtil.getFileExtension(fileRelativePath));
             webScanRepository.save(webScan);
 
-            // TODO word转pdf
+            // 执行word转pdf
             convertTaskService.convertPdfByWord(webScan.getScanId());
-//            convertPdfByWord(fileRelativePath, scanId);
 
             return new AjaxResult(true, MessageEnums.UPLOAD_SUCCESS);
         } catch (FileUpDownUtilException e) {
@@ -220,28 +219,6 @@ public class WebScanService extends BaseService {
             throw new ItscyException(MessageEnums.SYSTEM_ERROR, e);
         }
     }
-
-    /**
-     * 将word文件转为pdf，并保存到web_scan_file表中的previewName字段
-     * @param fileRelativePath
-     * @param scanId
-     */
-    private void convertPdfByWord(String fileRelativePath, Integer scanId) {
-        // 1. 检测是否为doc、docx
-        if (fileRelativePath.endsWith("doc") || fileRelativePath.endsWith("docx")) {
-            // 2. 执行转换程序
-            String pdfRelativePath = OfficeUtil.generatePdfByWord(
-                    gloablProperties.getItscyRoot(), fileRelativePath, FileUpDownUtil.SUBFOLDER_PDF);
-
-            // 3 执行成功，将pdf相对路径写入previewName字段
-            if (!pdfRelativePath.equals("")) {
-                WebScanFile webScanFile = webScanFileRepository.findByScanId(scanId);
-                webScanFile.setPreviewName(pdfRelativePath);
-                webScanFileRepository.save(webScanFile);
-            }
-        }
-    }
-
 
     /**
      * 图片预览
