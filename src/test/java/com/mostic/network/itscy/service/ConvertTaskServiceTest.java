@@ -4,10 +4,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.stereotype.Service;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by LIQing
@@ -15,18 +12,15 @@ import static org.junit.Assert.*;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class AsynTaskServiceTest {
+public class ConvertTaskServiceTest {
 
     @Autowired
-    private AsynTaskService taskService;
+    private ConvertTaskService taskService;
 
     @Test
     public void test() throws Exception {
         for (int i = 0; i < 10; i++) {
             taskService.executeAsyncTask(i);
-            taskService.executeAsyncTaskPlus(i);
         }
-
     }
-
 }

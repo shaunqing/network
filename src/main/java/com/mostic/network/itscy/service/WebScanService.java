@@ -54,6 +54,9 @@ public class WebScanService extends BaseService {
     @Autowired
     private GloablProperties gloablProperties;
 
+    @Autowired
+    private ConvertTaskService convertTaskService;
+
     /**
      * 根据systemId查询一个系统的所有安全测试状态
      *
@@ -87,9 +90,6 @@ public class WebScanService extends BaseService {
             webScan.setFileCount(fileCount);
 
             saveScanAndFileAndRecord(webScan, webScan.getFileType(), fileRelativePath);
-
-            // TODO word转pdf
-            convertPdfByWord(fileRelativePath, webScan.getScanId());
 
             return new AjaxResult(true, MessageEnums.SAVE_SUCCESS);
         } catch (FileUpDownUtilException e) {
@@ -127,6 +127,9 @@ public class WebScanService extends BaseService {
         if (webScanRecord != null) {
             webScanRecordRepository.save(webScanRecord);
         }
+
+        // TODO word转pdf
+        convertTaskService.convertPdfByWord(webScan.getScanId());
     }
 
     /**
@@ -207,7 +210,8 @@ public class WebScanService extends BaseService {
             webScanRepository.save(webScan);
 
             // TODO word转pdf
-            convertPdfByWord(fileRelativePath, scanId);
+            convertTaskService.convertPdfByWord(webScan.getScanId());
+//            convertPdfByWord(fileRelativePath, scanId);
 
             return new AjaxResult(true, MessageEnums.UPLOAD_SUCCESS);
         } catch (FileUpDownUtilException e) {

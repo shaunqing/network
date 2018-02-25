@@ -11,6 +11,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import java.util.concurrent.Executor;
 
 /**
+ * 线程池配置
  * Created by LIQing
  * 2018/2/25 16:20
  */
